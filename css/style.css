@@ -1,0 +1,24 @@
+body, textarea {
+	background: #333;
+	color: #eee;
+	font-family: monospace;
+}
+
+textarea {
+	background: #222;
+	width: 100%;
+	height: 100px;
+	resize: none;
+}
+
+.page-centre {
+	position: absolute;
+	margin: 0px;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+}
+
+.patch-container {
+	width: 50%;
+}
