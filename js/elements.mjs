@@ -138,30 +138,75 @@ export function Elements() {
 	const saved_elements = {};
 
 	this.create = (tag_name = "span", attributes = {}, name = "") => {
-		const tag = document.createElement(tag_name);
+		const element = document.createElement(tag_name);
 
-		tag.original_append = tag.append;
-		tag.append = (...elements) => {
-			tag.original_append(...elements);
-			return tag;
-		}
+		_addElementExtensions(element);
 
-		tag.delete = () => {
-			tag.outerHTML = "";
-			if(tag === saved_elements[name]) saved_elements[name] = undefined;
-		}
+		Object.assign(element, attributes);
 
-		if(name) {
-			if(saved_elements[name]) console.warn(`Overwriting element: ${name}`);
-			saved_elements[name] = tag;
-		}
+		_addToSavedElements(element, name);
 
-		return Object.assign(tag, attributes);
+		return element;
 	};
 
 	for(const x of tag_list) this[x] = (attributes, name) => this.create(x, attributes, name);
 
-	this.get = (name = "") => saved_elements[name];
+	this.get = (...names) => {
+		const ret = [];
+		for(const x of names) {
+			ret.push(saved_elements[x]);
+		}
+		if(names.length === 1) return ret[0];
+		return ret;
+	};
+
+	this.find = (selector, name = "") => {
+		const element = document.querySelector(selector);
+		_addElementExtensions(element);
+		_addToSavedElements(element, name);
+		return element;
+	};
+
+	this.findAll = (selector) => {
+		const elements = document.querySelectorAll(selector);
+		for(const x of elements) _addElementExtensions(x);
+		return elements;
+	};
+
+	const _addElementExtensions = (element) => {
+		if(element === null || element === undefined) return;
+
+		element.original_append = element.append;
+		element.append = (...elements) => {
+			element.original_append(...elements);
+			return element;
+		};
+
+		element.show = () => {
+			element.style.display = "";
+			return element;
+		};
+
+		element.hide = () => {
+			element.style.display = "none";
+			return element;
+		};
+
+		element.delete = () => {
+			element.outerHTML = "";
+			if(element === saved_elements[name]) saved_elements[name] = undefined;
+		};
+		return element;
+	};
+
+	const _addToSavedElements = (element, name = "") => {
+		if(name) {
+			if(saved_elements[name]) console.warn(`Overwriting element: ${name}`);
+			saved_elements[name] = element;
+			return true;
+		}
+		return false;
+	};
 };
 
 export default new Elements();
