@@ -14,58 +14,36 @@ async function loadElf(file) {
 	}
 }
 
-async function load(file) {
+window.load = async function(file) {
+	Elements.find("#filename").innerText = file.name;
 	window.elf = await loadElf(file);
 	if(window.elf === null) return;
 
-	Elements.get("FilePicker").delete();
+	Elements.get("FilePicker").hide();
+	Elements.get("PatchContainer").show();
 	const console_name = {
 		PowerPC64: "PlayStation 3",
 		MIPS: "PSP",
 		ARM: "PS Vita"
 	};
 
-	document.body.append(
-		Elements.div({className: "page-centre patch-container"}, "PatchContainer").append(
-			Elements.div({innerText: `Console: ${console_name[elf.machine]}`}),
-			Elements.input({
-				type: "button",
-				value: "Determine Game (For AutoPatching)",
-				style: "display: block",
-				onclick: function() {
-					let game;
-					try {
-						game = Game.findFromElf(elf);
-					} catch(error) {
-						alert(error);
-						return;
-					}
+	Elements.find("#console").innerText = console_name[window.elf.machine];
 
-					const patch_container = Elements.get("PatchContainer");
-					patch_container.insertBefore(
-						Elements.div({
-							innerText: `Game: ${game.title}`
-						}),
-					patch_container.children[1]);
-					this.outerHTML = "";
-				}
-			}),
-			Elements.textarea({placeholder: "Paste your patching script here..."})
-		)
-	);
+	let game;
+	try {
+		game = Game.findFromElf(window.elf);
+	} catch(error) {
+		alert(error);
+		return;
+	}
+
+	Elements.find("#game").innerText = game.title;
 }
 
 async function main() {
-	document.body.innerHTML = "";
-	document.body.append(
-		Elements.div({className: "page-centre"}, "FilePicker").append(
-			Elements.input({
-				type: "file",
-				accept: ".elf,.self,.bin",
-				onchange: function(e) {load(this.files[0])}
-			})
-		)
-	);
+	Elements.find("#loading").style.display = "none";
+	Elements.find("#file-picker", "FilePicker").show();
+	Elements.find("#patch-container", "PatchContainer");
 }
 
 main();

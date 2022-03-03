@@ -9,6 +9,20 @@
 		<script type="module" src="js/main.mjs"></script>
 	</head>
 	<body>
-		<div class="page-centre">Loading...</div>
+		<div id="loading" class="page-centre">Loading...</div>
+		<div id="file-picker" class="page-centre" style="display: none">
+			<input type="file" accept=".elf,.self,.bin" onchange="load(this.files[0])">
+		</div>
+		<div id="patch-container" class="page-centre patch-container" style="display: none">
+			<div id="filename">?</div>
+			<div id="details">
+				<div>Console: <span id="console">Unknown</span></div>
+				<div>Game: <span id="game">Unknown</span></div>
+			</div>
+			<div>
+
+			</div>
+			<textarea id="patch-script" placeholder="Paste your patching script here..."></textarea>
+		</div>
 	</body>
 </html>

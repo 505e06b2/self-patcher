@@ -11,6 +11,33 @@ textarea {
 	resize: none;
 }
 
+#filename {
+	font-weight: bold;
+	font-size: 120%;
+	text-align: center;
+	padding-bottom: 10px;
+	border-bottom: 2px #eee solid;
+}
+
+#details {
+	font-weight: bold;
+	margin-top: 10px;
+	margin-bottom: 10px;
+}
+
+#details div {
+	background: rgb(43, 43, 43);
+	padding-left: 1em;
+	margin: 5px;
+	padding-right: 1em;
+}
+
+#details span {
+	font-weight: 100;
+	position: absolute;
+	left: 7em;
+}
+
 .page-centre {
 	position: absolute;
 	margin: 0px;
