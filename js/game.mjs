@@ -1,6 +1,6 @@
 "use strict";
 
-function encodeIdentifier(identifier) {
+window.encodeIdentifier = (identifier) => {
 	const buffer = [];
 	for(const x of identifier) {
 		const char_code = x.charCodeAt(0);
@@ -8,9 +8,9 @@ function encodeIdentifier(identifier) {
 		buffer.push(char_code);
 	}
 	return new Uint8Array(buffer);
-}
+};
 
-function findIdentifier(needle, haystack) {
+window.findIdentifier = (needle, haystack) => {
 	const innerCheck = (i) => {
 		for(let x = 1; x < needle.length; x++) {
 			if(needle[x] !== haystack[i+x]) return false;
@@ -20,11 +20,11 @@ function findIdentifier(needle, haystack) {
 
 	for(let i = 0; i < haystack.length; i++) {
 		if(haystack[i] === needle[0]) {
-			if(innerCheck(i)) return true;
+			if(innerCheck(i)) return i;
 		}
 	}
-	return false;
-}
+	return -1;
+};
 
 const games = {
 	None: {
@@ -47,9 +47,13 @@ const games = {
 		title: "LittleBIGPlanet 2",
 		platform: "PowerPC64",
 		identifier: encodeIdentifier("LittleBigPlanet\xe2\x84\xa22\x00"),
-		applyPatch: () => {
-			console.log("lbp2 :)");
-		}
+		applyPatch:
+`const config = {
+	"replace_urls_with": "[URL HERE]",
+	"http_url": encodeIdentifier("littlebigplanetps3.online.scee.com:10060/LITTLEBIGPLANETPS3_XML")
+	"https_url": encodeIdentifier("littlebigplanetps3.online.scee.com:10061/LITTLEBIGPLANETPS3_XML")
+}
+`
 	},
 
 	LittleBigPlanet_3: {
@@ -92,7 +96,7 @@ export const GameLoading = {
 
 		let found_game = undefined;
 		for(const game_info of platform_matches) {
-			if(findIdentifier(game_info.identifier, elf.bytes)) {
+			if(findIdentifier(game_info.identifier, elf.bytes) !== -1) {
 				if(found_game !== undefined) throw `Multiple matches for game in ELF: ${game_info.title} and ${found_game.title}`;
 				found_game = game_info;
 			}

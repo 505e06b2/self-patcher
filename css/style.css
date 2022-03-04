@@ -47,5 +47,17 @@ textarea {
 }
 
 .patch-container {
-	width: 50%;
+	width: 70%;
+}
+
+@media (orientation: portrait) {
+	.page-centre {
+		top: 50%;
+		left: 0%;
+		transform: translate(0%, -50%);
+	}
+
+	.patch-container {
+		width: 100%;
+	}
 }
