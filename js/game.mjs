@@ -1,86 +1,52 @@
 "use strict";
 
-window.encodeIdentifier = (identifier) => {
-	const buffer = [];
-	for(const x of identifier) {
-		const char_code = x.charCodeAt(0);
-		if(char_code > 255) throw `Use hex values instead of pasting non-ascii in identifier: (${identifier})`;
-		buffer.push(char_code);
-	}
-	return new Uint8Array(buffer);
-};
+import "./uint8array_extensions.mjs";
 
-window.findIdentifier = (needle, haystack) => {
-	const innerCheck = (i) => {
-		for(let x = 1; x < needle.length; x++) {
-			if(needle[x] !== haystack[i+x]) return false;
-		}
-		return true;
-	};
-
-	for(let i = 0; i < haystack.length; i++) {
-		if(haystack[i] === needle[0]) {
-			if(innerCheck(i)) return i;
-		}
-	}
-	return -1;
-};
+async function getPatch(name) {
+	return await (await fetch(`./patches/${name}.js`)).text();
+}
 
 const games = {
 	None: {
 		title: "Unknown",
 		platform: null,
 		identifier: null,
-		applyPatch: null
+		patch: null
 	},
 
 	LittleBigPlanet: {
 		title: "LittleBIGPlanet",
 		platform: "PowerPC64",
-		identifier: encodeIdentifier("LittleBigPlanet\x99\x00"),
-		applyPatch: () => {
-			console.log(":)");
-		}
+		identifier: Uint8Array.fromAsciiString("LittleBigPlanet\x99\x00"),
+		patch: await getPatch("littlebigplanet")
 	},
 
 	LittleBigPlanet_2: {
 		title: "LittleBIGPlanet 2",
 		platform: "PowerPC64",
-		identifier: encodeIdentifier("LittleBigPlanet\xe2\x84\xa22\x00"),
-		applyPatch:
-`const config = {
-	"replace_urls_with": "[URL HERE]",
-	"http_url": encodeIdentifier("littlebigplanetps3.online.scee.com:10060/LITTLEBIGPLANETPS3_XML")
-	"https_url": encodeIdentifier("littlebigplanetps3.online.scee.com:10061/LITTLEBIGPLANETPS3_XML")
-}
-`
+		identifier: Uint8Array.fromAsciiString("LittleBigPlanet\xe2\x84\xa22\x00"),
+		patch: "no"//await getPatch("littlebigplanet_2")
 	},
 
 	LittleBigPlanet_3: {
 		title: "LittleBIGPlanet 3",
 		platform: "PowerPC64",
-		identifier: encodeIdentifier("LittleBigPlanet\xe2\x84\xa23\x00"),
-		applyPatch: () => {
-			console.log("lbp3 :)");
-		}
+		identifier: Uint8Array.fromAsciiString("LittleBigPlanet\xe2\x84\xa23\x00"),
+		patch: "no"
 	},
 
 	LittleBigPlanet_Vita: {
 		title: "LittleBIGPlanet Vita",
 		platform: "ARM",
-		identifier: encodeIdentifier("LittleBigPlanet\xe2\x84\xa2 PS Vita\x00"),
-		applyPatch: () => {
-			console.log("lbp vita :)");
-		}
+		identifier: Uint8Array.fromAsciiString("LittleBigPlanet\xe2\x84\xa2 PS Vita\x00"),
+		patch: "no"
 	},
 
 	LittleBigPlanet_PSP: {
 		title: "LittleBIGPlanet",
 		platform: "MIPS",
-		identifier: encodeIdentifier("LittleBigPlanet\xe2\x84\xa2\x00"),
-		applyPatch: () => {
-			console.log("lbp psp :)");
-		}
+		identifier: Uint8Array.fromAsciiString("LittleBigPlanet\xe2\x84\xa2\x00"),
+		patch: "no"
 	}
 }
 
@@ -96,7 +62,7 @@ export const GameLoading = {
 
 		let found_game = undefined;
 		for(const game_info of platform_matches) {
-			if(findIdentifier(game_info.identifier, elf.bytes) !== -1) {
+			if(elf.bytes.indexOfSubArray(game_info.identifier) !== -1) {
 				if(found_game !== undefined) throw `Multiple matches for game in ELF: ${game_info.title} and ${found_game.title}`;
 				found_game = game_info;
 			}

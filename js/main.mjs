@@ -38,7 +38,7 @@ window.load = async function(file) {
 	}
 
 	Elements.find("#game").innerText = game.title;
-	Elements.find("#patch-script").value = game.applyPatch.toString();
+	Elements.find("#patch-script").value = game.patch;
 }
 
 async function main() {
