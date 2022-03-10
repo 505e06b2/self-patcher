@@ -2,8 +2,17 @@
 
 import "./uint8array_extensions.mjs";
 
+const AsyncFunction = Object.getPrototypeOf(async function(){}).constructor;
+
 async function getPatch(name) {
 	return await (await fetch(`./patches/${name}.js`)).text();
+}
+
+async function applyPatchBase(base_name, name) {
+	const base_contents = await (await fetch(`./patches/${base_name}.js`)).text();
+	const patch_contents = await (await fetch(`./patches/${name}.js`)).text();
+	const patch = new AsyncFunction("base", patch_contents);
+	return await patch(base_contents) || base_contents;
 }
 
 const games = {
@@ -18,7 +27,7 @@ const games = {
 		title: "LittleBIGPlanet",
 		platform: "PowerPC64",
 		identifier: Uint8Array.fromAsciiString("LittleBigPlanet\x99\x00"),
-		patch: await getPatch("littlebigplanet")
+		patch: await applyPatchBase("base_littlebigplanet", "littlebigplanet")
 	},
 
 	LittleBigPlanet_2: {
