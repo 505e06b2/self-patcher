@@ -34,7 +34,7 @@ const games = {
 		title: "LittleBIGPlanet 2",
 		platform: "PowerPC64",
 		identifier: Uint8Array.fromAsciiString("LittleBigPlanet\xe2\x84\xa22\x00"),
-		patch: "no"//await getPatch("littlebigplanet_2")
+		patch: await applyPatchBase("base_littlebigplanet", "littlebigplanet_2")
 	},
 
 	LittleBigPlanet_3: {
