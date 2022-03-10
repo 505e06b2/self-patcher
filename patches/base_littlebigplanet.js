@@ -6,6 +6,7 @@ function BinaryUrl(url) {
 	this.string = url;
 	this.byte_array = Uint8Array.fromAsciiString(url);
 	this.index = elf.bytes.indexOfSubArray(this.byte_array);
+	if(this.index == -1) console.warn(`Didn't find ${url} in this binary`);
 	this.length = url.length;
 }
 
@@ -27,10 +28,18 @@ const replace_urls_with = Uint8Array.fromAsciiString(new_url);
 
 //remove original URLS
 for(const x of Object.values(config.urls)) {
+	if(x.index == -1) {
+		console.warn(`Skipping the memset of ${x.string}`);
+		continue;
+	}
 	elf.bytes.fill(0x00, x.index, x.index + x.length);
 }
 
 //set new URL
 for(const x of Object.values(config.urls)) {
+	if(x.index == -1) {
+		console.warn(`Skipping the replacement of ${x.string}`);
+		continue;
+	}
 	elf.bytes.set(replace_urls_with, x.index);
 }
