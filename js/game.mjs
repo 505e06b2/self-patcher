@@ -48,7 +48,7 @@ const games = {
 		title: "LittleBIGPlanet Vita",
 		platform: "ARM",
 		identifier: Uint8Array.fromAsciiString("LittleBigPlanet\xe2\x84\xa2 PS Vita\x00"),
-		patch: "no"
+		patch: await applyPatchBase("base_littlebigplanet", "littlebigplanet_vita")
 	},
 
 	LittleBigPlanet_PSP: {
