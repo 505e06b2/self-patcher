@@ -20,6 +20,11 @@
 				<div>Game: <span id="game">Unknown</span></div>
 			</div>
 			<textarea id="patch-script" placeholder="Paste your patching script here..." spellcheck="false"></textarea>
+			<div class="buttons-container">
+				<button class="big-button" onclick="execute(this)">Execute!</button>
+				<button class="big-button" onclick="downloadElf()">Download ELF</button>
+				<button id="download-self-button" class="big-button" onclick="downloadSelf()" style="display: none">Download SELF</button>
+			</div>
 		</div>
 	</body>
 </html>
