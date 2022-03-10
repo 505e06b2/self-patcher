@@ -41,7 +41,7 @@ const games = {
 		title: "LittleBIGPlanet 3",
 		platform: "PowerPC64",
 		identifier: Uint8Array.fromAsciiString("LittleBigPlanet\xe2\x84\xa23\x00"),
-		patch: "no"
+		patch: await applyPatchBase("base_littlebigplanet", "littlebigplanet_3")
 	},
 
 	LittleBigPlanet_Vita: {
