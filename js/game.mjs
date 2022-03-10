@@ -55,7 +55,7 @@ const games = {
 		title: "LittleBIGPlanet",
 		platform: "MIPS",
 		identifier: Uint8Array.fromAsciiString("LittleBigPlanet\xe2\x84\xa2\x00"),
-		patch: "no"
+		patch: await applyPatchBase("base_littlebigplanet", "littlebigplanet_psp")
 	}
 }
 
